@@ -22,38 +22,52 @@
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZES-q4-3Hm">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="409"/>
                                     </imageView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-0s-5rY">
-                                        <rect key="frame" x="0.0" y="409" width="414" height="409"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-0s-5rY">
+                                        <rect key="frame" x="10" y="409" width="394" height="409"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZv-fp-ZWz" userLabel="SongNameLabel">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="136.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="394" height="154"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xal-PK-lwX" userLabel="Progress">
-                                                <rect key="frame" x="0.0" y="136.5" width="414" height="136"/>
+                                                <rect key="frame" x="0.0" y="154" width="394" height="10"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="10" id="JEa-fl-xOu"/>
+                                                </constraints>
                                             </progressView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="FSg-6E-hF0" userLabel="PlayButtonContainer">
-                                                <rect key="frame" x="0.0" y="272.5" width="414" height="136.5"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="FSg-6E-hF0" userLabel="PlayButtonContainer">
+                                                <rect key="frame" x="0.0" y="164" width="394" height="245"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdB-5A-Sjn" userLabel="Previous">
-                                                        <rect key="frame" x="0.0" y="0.0" width="138" height="136.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="128" height="245"/>
                                                         <state key="normal" title="Previous"/>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8if-W8-Lx1" userLabel="Play">
-                                                        <rect key="frame" x="138" y="0.0" width="138" height="136.5"/>
+                                                        <rect key="frame" x="133" y="0.0" width="128" height="245"/>
                                                         <state key="normal" title="Play"/>
+                                                        <connections>
+                                                            <action selector="playButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3OV-De-tVc"/>
+                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sm-j8-zV7" userLabel="Next">
-                                                        <rect key="frame" x="276" y="0.0" width="138" height="136.5"/>
+                                                        <rect key="frame" x="266" y="0.0" width="128" height="245"/>
                                                         <state key="normal" title="Next"/>
                                                     </button>
                                                 </subviews>
                                             </stackView>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="FSg-6E-hF0" secondAttribute="trailing" id="5Fw-19-vjG"/>
+                                            <constraint firstItem="FSg-6E-hF0" firstAttribute="leading" secondItem="2h9-0s-5rY" secondAttribute="leading" id="uiY-sc-7qR"/>
+                                        </constraints>
                                     </stackView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="2h9-0s-5rY" secondAttribute="trailing" constant="10" id="QDh-L1-rSy"/>
+                                    <constraint firstItem="2h9-0s-5rY" firstAttribute="leading" secondItem="pDE-VI-flr" secondAttribute="leading" constant="10" id="tFZ-WM-URo"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -65,6 +79,9 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="pDE-VI-flr" secondAttribute="bottom" id="gLS-NG-vJq"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="nameLabel" destination="HZv-fp-ZWz" id="glG-9B-lS5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
