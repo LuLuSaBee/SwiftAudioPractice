@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -20,40 +21,56 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZES-q4-3Hm">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="409"/>
+                                        <rect key="frame" x="0.0" y="0.5" width="414" height="408"/>
+                                        <imageReference key="image" image="music.quarternote.3" catalog="system" renderingMode="original"/>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-0s-5rY">
                                         <rect key="frame" x="10" y="409" width="394" height="409"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZv-fp-ZWz" userLabel="SongNameLabel">
-                                                <rect key="frame" x="0.0" y="0.0" width="394" height="154"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="394" height="339"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xal-PK-lwX" userLabel="Progress">
-                                                <rect key="frame" x="0.0" y="154" width="394" height="10"/>
+                                                <rect key="frame" x="0.0" y="339" width="394" height="10"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="10" id="JEa-fl-xOu"/>
                                                 </constraints>
                                             </progressView>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="FSg-6E-hF0" userLabel="PlayButtonContainer">
-                                                <rect key="frame" x="0.0" y="164" width="394" height="245"/>
+                                                <rect key="frame" x="0.0" y="349" width="394" height="60"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdB-5A-Sjn" userLabel="Previous">
-                                                        <rect key="frame" x="0.0" y="0.0" width="128" height="245"/>
-                                                        <state key="normal" title="Previous"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="128" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="jtd-zj-Qwf"/>
+                                                        </constraints>
+                                                        <state key="normal" image="backward.fill" catalog="system"/>
+                                                        <connections>
+                                                            <action selector="perviousButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HmG-lL-o1T"/>
+                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8if-W8-Lx1" userLabel="Play">
-                                                        <rect key="frame" x="133" y="0.0" width="128" height="245"/>
-                                                        <state key="normal" title="Play"/>
+                                                        <rect key="frame" x="133" y="0.0" width="128" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="4KY-zi-ECz"/>
+                                                        </constraints>
+                                                        <state key="normal" image="pause.fill" catalog="system"/>
                                                         <connections>
                                                             <action selector="playButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3OV-De-tVc"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sm-j8-zV7" userLabel="Next">
-                                                        <rect key="frame" x="266" y="0.0" width="128" height="245"/>
-                                                        <state key="normal" title="Next"/>
+                                                        <rect key="frame" x="266" y="0.0" width="128" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="YYW-a9-gvl"/>
+                                                        </constraints>
+                                                        <state key="normal" image="forward.fill" catalog="system"/>
+                                                        <connections>
+                                                            <action selector="nextButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aWw-TS-jYm"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -65,7 +82,9 @@
                                     </stackView>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="ZES-q4-3Hm" secondAttribute="trailing" id="D95-6E-ZUL"/>
                                     <constraint firstAttribute="trailing" secondItem="2h9-0s-5rY" secondAttribute="trailing" constant="10" id="QDh-L1-rSy"/>
+                                    <constraint firstItem="ZES-q4-3Hm" firstAttribute="leading" secondItem="pDE-VI-flr" secondAttribute="leading" id="RjI-rm-llU"/>
                                     <constraint firstItem="2h9-0s-5rY" firstAttribute="leading" secondItem="pDE-VI-flr" secondAttribute="leading" constant="10" id="tFZ-WM-URo"/>
                                 </constraints>
                             </stackView>
@@ -81,6 +100,7 @@
                     </view>
                     <connections>
                         <outlet property="nameLabel" destination="HZv-fp-ZWz" id="glG-9B-lS5"/>
+                        <outlet property="playButton" destination="8if-W8-Lx1" id="JHa-5o-hRN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -89,6 +109,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="backward.fill" catalog="system" width="128" height="79"/>
+        <image name="forward.fill" catalog="system" width="128" height="79"/>
+        <image name="music.quarternote.3" catalog="system" width="128" height="103"/>
+        <image name="pause.fill" catalog="system" width="116" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

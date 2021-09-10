@@ -15,7 +15,7 @@
 		8B17E0A626E8B30A007E9E61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B17E0A426E8B30A007E9E61 /* LaunchScreen.storyboard */; };
 		8B17E0B126E8B30A007E9E61 /* SwiftAudioPracticeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0B026E8B30A007E9E61 /* SwiftAudioPracticeTests.swift */; };
 		8B17E0BC26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0BB26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift */; };
-		8B17E0CC26E9B73B007E9E61 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0CB26E9B73B007E9E61 /* SongStore.swift */; };
+		8B17E0CC26E9B73B007E9E61 /* SongData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0CB26E9B73B007E9E61 /* SongData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,7 @@
 		8B17E0B726E8B30A007E9E61 /* SwiftAudioPracticeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftAudioPracticeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B17E0BB26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAudioPracticeUITests.swift; sourceTree = "<group>"; };
 		8B17E0BD26E8B30A007E9E61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8B17E0CB26E9B73B007E9E61 /* SongStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
+		8B17E0CB26E9B73B007E9E61 /* SongData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,7 +108,7 @@
 				8B17E0A226E8B30A007E9E61 /* Assets.xcassets */,
 				8B17E0A426E8B30A007E9E61 /* LaunchScreen.storyboard */,
 				8B17E0A726E8B30A007E9E61 /* Info.plist */,
-				8B17E0CB26E9B73B007E9E61 /* SongStore.swift */,
+				8B17E0CB26E9B73B007E9E61 /* SongData.swift */,
 			);
 			path = SwiftAudioPractice;
 			sourceTree = "<group>";
@@ -263,7 +263,7 @@
 			files = (
 				8B17E09E26E8B308007E9E61 /* ViewController.swift in Sources */,
 				8B17E09A26E8B308007E9E61 /* AppDelegate.swift in Sources */,
-				8B17E0CC26E9B73B007E9E61 /* SongStore.swift in Sources */,
+				8B17E0CC26E9B73B007E9E61 /* SongData.swift in Sources */,
 				8B17E09C26E8B308007E9E61 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

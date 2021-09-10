@@ -10,31 +10,63 @@ import AVFoundation
 
 class ViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
+    @IBOutlet var playButton: UIButton!
 
-    var songSotre: SongStore!
+    var songData: SongData!
 
-    var player: AVPlayer!
+    let player = AVPlayer()
+    var playerItem: AVPlayerItem!
+    var songIndex = 0
+    var isPlaying = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let songURL = URL(string: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/Yodel_Sound_Effect.mp3")
-        player = AVPlayer(url: songURL!)
+        playMusic()
+        //        nameLabel.text = songURL?.lastPathComponent
     }
 
     @IBAction func playButtonClick(_ sender: Any) {
+        isPlaying = !isPlaying
+        changePlayingInfo()
+    }
+
+    @IBAction func perviousButtonClick(_ sender: Any) {
+        if songIndex == 0 {
+            songIndex = songData.songSources.count - 1
+        } else {
+            songIndex -= 1
+        }
+        playMusic()
+    }
+
+    @IBAction func nextButtonClick(_ sender: Any) {
+        if songIndex == songData.songSources.count - 1 {
+            songIndex = 0
+        } else {
+            songIndex += 1
+        }
         playMusic()
     }
 
     func playMusic() {
-        switch player.status {
-        case .readyToPlay:
-            print("readyToPlay")
-        case .failed:
-            print("failed")
-        default:
-            print("unkonw")
+        let currentSong = songData.songSources[songIndex]
+        guard let url = URL(string: currentSong) else { return }
+        playerItem = AVPlayerItem(url: url)
+        player.replaceCurrentItem(with: playerItem)
+
+        nameLabel.text = url.lastPathComponent
+
+        isPlaying = true
+        changePlayingInfo()
+    }
+
+    func changePlayingInfo() {
+        if isPlaying {
+            player.play()
+        } else {
+            player.pause()
         }
-        player.play()
+        playButton.setImage(UIImage(systemName: isPlaying ? "pause.fill" : "play.fill"), for: .normal)
     }
 }
 
