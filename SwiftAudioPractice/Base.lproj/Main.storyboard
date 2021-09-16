@@ -28,17 +28,20 @@
                                         <rect key="frame" x="10" y="409" width="394" height="409"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZv-fp-ZWz" userLabel="SongNameLabel">
-                                                <rect key="frame" x="0.0" y="0.0" width="394" height="339"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="394" height="329"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xal-PK-lwX" userLabel="Progress">
-                                                <rect key="frame" x="0.0" y="339" width="394" height="10"/>
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="NkK-GO-gLc">
+                                                <rect key="frame" x="-2" y="329" width="398" height="21"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="10" id="JEa-fl-xOu"/>
+                                                    <constraint firstAttribute="height" constant="20" id="Sio-zc-RIw"/>
                                                 </constraints>
-                                            </progressView>
+                                                <connections>
+                                                    <action selector="slide:" destination="BYZ-38-t0r" eventType="valueChanged" id="jn3-wz-5ob"/>
+                                                </connections>
+                                            </slider>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="FSg-6E-hF0" userLabel="PlayButtonContainer">
                                                 <rect key="frame" x="0.0" y="349" width="394" height="60"/>
                                                 <subviews>
@@ -101,6 +104,7 @@
                     <connections>
                         <outlet property="nameLabel" destination="HZv-fp-ZWz" id="glG-9B-lS5"/>
                         <outlet property="playButton" destination="8if-W8-Lx1" id="JHa-5o-hRN"/>
+                        <outlet property="sliderBar" destination="NkK-GO-gLc" id="edf-Bc-8YD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
