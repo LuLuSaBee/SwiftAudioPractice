@@ -22,7 +22,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         playMusic()
-        //        nameLabel.text = songURL?.lastPathComponent
     }
 
     @IBAction func playButtonClick(_ sender: Any) {
