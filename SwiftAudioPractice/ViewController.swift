@@ -16,7 +16,6 @@ class ViewController: UIViewController {
     var songIndex = 0
     var isPlaying = true
     private var playerItemContext = 0
-    var secondsOfSong: Double!
     var timer: Timer!
     var timeInterval = 0.1
 
