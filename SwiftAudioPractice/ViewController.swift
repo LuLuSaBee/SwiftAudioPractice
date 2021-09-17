@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import MediaPlayer
 
 class ViewController: UIViewController {
     var songData: SongData!
@@ -18,6 +19,8 @@ class ViewController: UIViewController {
     private var playerItemContext = 0
     var timer: Timer!
     var timeInterval = 0.1
+//    var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+    var audioSession = AVAudioSession.sharedInstance()
 
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var playButton: UIButton!
@@ -49,9 +52,38 @@ class ViewController: UIViewController {
             case .readyToPlay:
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 setTimer()
+                let nowPlayingInfo: [String: Any] = [
+                    MPMediaItemPropertyTitle: "Title",
+                    MPMediaItemPropertyAlbumTitle: "AlbumTitle",
+                    MPMediaItemPropertyArtist: "Artist Name",
+                    MPMediaItemPropertyPlaybackDuration: playerItem.duration.seconds,
+                    MPNowPlayingInfoPropertyElapsedPlaybackTime: playerItem.currentTime().seconds
+                ]
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+                setupNowPlayingInfoCenter()
             default:
                 return
             }
+        }
+    }
+
+    func setupNowPlayingInfoCenter() {
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        MPRemoteCommandCenter.shared().playCommand.addTarget { event in
+            self.player.play()
+            return .success
+        }
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget { event in
+            self.player.pause()
+            return .success
+        }
+        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget { event in
+            self.nextMusic()
+            return .success
+        }
+        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget { event in
+            self.perviousMusic()
+            return .success
         }
     }
 
@@ -86,26 +118,34 @@ class ViewController: UIViewController {
     }
 
     @IBAction func perviousButtonClick(_ sender: Any) {
+        perviousMusic()
+    }
+
+    @IBAction func nextButtonClick(_ sender: Any) {
+        nextMusic()
+    }
+    
+    func perviousMusic(){
         if songIndex == 0 {
             songIndex = songData.songSources.count - 1
         } else {
             songIndex -= 1
         }
-        stopTimer()
         playMusic()
     }
-
-    @IBAction func nextButtonClick(_ sender: Any) {
+    
+    func nextMusic(){
         if songIndex == songData.songSources.count - 1 {
             songIndex = 0
         } else {
             songIndex += 1
         }
-        stopTimer()
         playMusic()
     }
 
     func playMusic() {
+        stopTimer()
+        
         let currentSong = songData.songSources[songIndex]
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
