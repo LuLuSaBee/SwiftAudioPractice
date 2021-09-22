@@ -52,14 +52,6 @@ class ViewController: UIViewController {
             case .readyToPlay:
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 setTimer()
-                let nowPlayingInfo: [String: Any] = [
-                    MPMediaItemPropertyTitle: "Title",
-                    MPMediaItemPropertyAlbumTitle: "AlbumTitle",
-                    MPMediaItemPropertyArtist: "Artist Name",
-                    MPMediaItemPropertyPlaybackDuration: playerItem.duration.seconds,
-                    MPNowPlayingInfoPropertyElapsedPlaybackTime: playerItem.currentTime().seconds
-                ]
-                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
                 setupNowPlayingInfoCenter()
             default:
                 return
@@ -68,6 +60,15 @@ class ViewController: UIViewController {
     }
 
     func setupNowPlayingInfoCenter() {
+        let nowPlayingInfo: [String: Any] = [
+            MPMediaItemPropertyTitle: "Title",
+            MPMediaItemPropertyAlbumTitle: "AlbumTitle",
+            MPMediaItemPropertyArtist: "Artist Name",
+            MPMediaItemPropertyPlaybackDuration: playerItem.duration.seconds,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: playerItem.currentTime().seconds
+        ]
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
             self.player.play()
