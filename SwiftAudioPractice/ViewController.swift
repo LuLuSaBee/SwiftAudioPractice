@@ -20,6 +20,7 @@ class ViewController: UIViewController {
     var timer: Timer!
     var timeInterval = 0.1
     var audioSession = AVAudioSession.sharedInstance()
+    var nowPlayingCenter = MPNowPlayingInfoCenter.default()
 
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var playButton: UIButton!
@@ -28,6 +29,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareMusic()
+        setupRemoteControll()
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -51,8 +53,8 @@ class ViewController: UIViewController {
             case .readyToPlay:
                 player.play()
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
+                nowPlayingCenter.nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
                 setTimer()
-                setupNowPlayingInfoCenter()
             default:
                 return
             }
@@ -74,16 +76,7 @@ class ViewController: UIViewController {
         }
     }
 
-    func setupNowPlayingInfoCenter() {
-        let nowPlayingInfo: [String: Any] = [
-            MPMediaItemPropertyTitle: "Title",
-            MPMediaItemPropertyAlbumTitle: "AlbumTitle",
-            MPMediaItemPropertyArtist: "Artist Name",
-            MPMediaItemPropertyPlaybackDuration: playerItem.duration.seconds,
-            MPNowPlayingInfoPropertyElapsedPlaybackTime: playerItem.currentTime().seconds
-        ]
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-
+    func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
             self.player.play()
@@ -106,8 +99,8 @@ class ViewController: UIViewController {
     func playButtonPlaying() {
         playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
     }
-    
-    func playButtonPaused(){
+
+    func playButtonPaused() {
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
     }
 
@@ -184,6 +177,13 @@ class ViewController: UIViewController {
         player.replaceCurrentItem(with: playerItem)
 
         nameLabel.text = url.lastPathComponent
+
+        let nowPlayingInfo: [String: Any] = [
+            MPMediaItemPropertyTitle: url.lastPathComponent,
+            MPMediaItemPropertyAlbumTitle: "InternetAlbum",
+            MPMediaItemPropertyArtist: "Internet",
+        ]
+        nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
     }
 }
 
