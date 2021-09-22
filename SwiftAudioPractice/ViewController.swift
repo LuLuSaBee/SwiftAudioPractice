@@ -48,10 +48,8 @@ class ViewController: UIViewController {
         
         switch type {
         case .began:
-            print("get Interrupt Notification: began")
             player.pause()
         case .ended:
-            print("get Interrupt Notification: ended")
             guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             if options.contains(.shouldResume) {
