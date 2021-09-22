@@ -19,7 +19,6 @@ class ViewController: UIViewController {
     private var playerItemContext = 0
     var timer: Timer!
     var timeInterval = 0.1
-//    var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     var audioSession = AVAudioSession.sharedInstance()
 
     @IBOutlet var nameLabel: UILabel!
@@ -28,7 +27,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        playMusic()
+        prepareMusic()
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -50,9 +49,25 @@ class ViewController: UIViewController {
 
             switch status {
             case .readyToPlay:
+                player.play()
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 setTimer()
                 setupNowPlayingInfoCenter()
+            default:
+                return
+            }
+        } else if keyPath == #keyPath(AVPlayer.timeControlStatus) {
+            let status: AVPlayer.TimeControlStatus
+            guard let statusNumber = change?[.newKey] as? NSNumber else {
+                return
+            }
+            status = AVPlayer.TimeControlStatus(rawValue: statusNumber.intValue)!
+
+            switch status {
+            case .playing:
+                playButtonPlaying()
+            case .paused:
+                playButtonPaused()
             default:
                 return
             }
@@ -68,7 +83,7 @@ class ViewController: UIViewController {
             MPNowPlayingInfoPropertyElapsedPlaybackTime: playerItem.currentTime().seconds
         ]
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-        
+
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
             self.player.play()
@@ -86,6 +101,14 @@ class ViewController: UIViewController {
             self.perviousMusic()
             return .success
         }
+    }
+
+    func playButtonPlaying() {
+        playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+    }
+    
+    func playButtonPaused(){
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
     }
 
     func setTimer() {
@@ -114,8 +137,14 @@ class ViewController: UIViewController {
     }
 
     @IBAction func playButtonClick(_ sender: Any) {
-        isPlaying = !isPlaying
-        changePlayingInfo()
+        switch player.timeControlStatus {
+        case .playing:
+            player.pause()
+        case .paused:
+            player.play()
+        default:
+            return
+        }
     }
 
     @IBAction func perviousButtonClick(_ sender: Any) {
@@ -125,47 +154,36 @@ class ViewController: UIViewController {
     @IBAction func nextButtonClick(_ sender: Any) {
         nextMusic()
     }
-    
-    func perviousMusic(){
+
+    func perviousMusic() {
         if songIndex == 0 {
             songIndex = songData.songSources.count - 1
         } else {
             songIndex -= 1
         }
-        playMusic()
+        prepareMusic()
     }
-    
-    func nextMusic(){
+
+    func nextMusic() {
         if songIndex == songData.songSources.count - 1 {
             songIndex = 0
         } else {
             songIndex += 1
         }
-        playMusic()
+        prepareMusic()
     }
 
-    func playMusic() {
+    func prepareMusic() {
         stopTimer()
-        
+
         let currentSong = songData.songSources[songIndex]
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
         playerItem.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new], context: &playerItemContext)
+        player.addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: [.new], context: &playerItemContext)
         player.replaceCurrentItem(with: playerItem)
 
         nameLabel.text = url.lastPathComponent
-
-        isPlaying = true
-        changePlayingInfo()
-    }
-
-    func changePlayingInfo() {
-        if isPlaying {
-            player.play()
-        } else {
-            player.pause()
-        }
-        playButton.setImage(UIImage(systemName: isPlaying ? "pause.fill" : "play.fill"), for: .normal)
     }
 }
 
