@@ -15,7 +15,6 @@ class ViewController: UIViewController {
     let player = AVPlayer()
     var playerItem: AVPlayerItem!
     var songIndex = 0
-    var isPlaying = true
     private var playerItemContext = 0
     var timer: Timer!
     var timeInterval = 0.1
