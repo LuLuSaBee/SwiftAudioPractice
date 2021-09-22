@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     func setupNotifications() {
         let notification = NotificationCenter.default
         notification.addObserver(self, selector: #selector(handleInterruption(_:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        notification.addObserver(self, selector: #selector(playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
 
     @objc func handleInterruption(_ notification: Notification) {
@@ -59,6 +60,10 @@ class ViewController: UIViewController {
         default:
             return
         }
+    }
+    
+    @objc func playerDidFinishPlaying(){
+        nextMusic()
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
