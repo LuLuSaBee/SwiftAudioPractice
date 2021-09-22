@@ -82,6 +82,7 @@ class ViewController: UIViewController {
                 player.play()
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 nowPlayingCenter.nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
+                nowPlayingCenter.nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
                 setTimer()
 
                 do {
