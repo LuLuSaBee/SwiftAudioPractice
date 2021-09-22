@@ -19,7 +19,8 @@ class ViewController: UIViewController {
     var timer: Timer!
     var timeInterval = 0.1
     var audioSession = AVAudioSession.sharedInstance()
-    var nowPlayingCenter = MPNowPlayingInfoCenter.default()
+    var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+    var nowPlayingInfo = [String: Any]()
 
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var playButton: UIButton!
@@ -81,8 +82,11 @@ class ViewController: UIViewController {
             case .readyToPlay:
                 player.play()
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
-                nowPlayingCenter.nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
-                nowPlayingCenter.nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+
+                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
+                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+                nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+
                 setTimer()
 
                 do {
@@ -103,11 +107,16 @@ class ViewController: UIViewController {
             switch status {
             case .playing:
                 playButtonPlaying()
+                nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
             case .paused:
                 playButtonPaused()
+                nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0
             default:
                 return
             }
+
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+            nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
         }
     }
 
@@ -213,12 +222,10 @@ class ViewController: UIViewController {
 
         nameLabel.text = url.lastPathComponent
 
-        let nowPlayingInfo: [String: Any] = [
-            MPMediaItemPropertyTitle: url.lastPathComponent,
-            MPMediaItemPropertyAlbumTitle: "InternetAlbum",
-            MPMediaItemPropertyArtist: "Internet",
-        ]
-        nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+        nowPlayingInfo[MPMediaItemPropertyTitle] = url.lastPathComponent
+        nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "InternetAlbum"
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "Internet"
+        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 }
 
