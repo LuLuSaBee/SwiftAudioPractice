@@ -30,6 +30,38 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         prepareMusic()
         setupRemoteControll()
+        setupNotifications()
+    }
+
+    func setupNotifications() {
+        let notification = NotificationCenter.default
+        notification.addObserver(self, selector: #selector(handleInterruption(_:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+    }
+
+    @objc func handleInterruption(_ notification: Notification) {
+        
+        guard let userInfo = notification.userInfo,
+            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+            return
+        }
+        
+        switch type {
+        case .began:
+            print("get Interrupt Notification: began")
+            player.pause()
+        case .ended:
+            print("get Interrupt Notification: ended")
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                player.play()
+            } else {
+                return
+            }
+        default:
+            return
+        }
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -55,6 +87,12 @@ class ViewController: UIViewController {
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 nowPlayingCenter.nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
                 setTimer()
+                
+                do {
+                    try audioSession.setActive(true)
+                } catch {
+                    print("error")
+                }
             default:
                 return
             }
