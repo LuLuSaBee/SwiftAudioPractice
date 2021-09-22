@@ -38,13 +38,12 @@ class ViewController: UIViewController {
     }
 
     @objc func handleInterruption(_ notification: Notification) {
-        
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
             let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
             return
         }
-        
+
         switch type {
         case .began:
             player.pause()
@@ -84,7 +83,7 @@ class ViewController: UIViewController {
                 sliderBar.maximumValue = Float(playerItem.duration.seconds)
                 nowPlayingCenter.nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
                 setTimer()
-                
+
                 do {
                     try audioSession.setActive(true)
                 } catch {
