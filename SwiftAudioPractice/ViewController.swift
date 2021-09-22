@@ -12,15 +12,15 @@ import MediaPlayer
 class ViewController: UIViewController {
     var songData: SongData!
 
-    let player = AVPlayer()
-    var playerItem: AVPlayerItem!
-    var songIndex = 0
+    private let player = AVPlayer()
+    private var playerItem: AVPlayerItem!
+    private var songIndex = 0
     private var playerItemContext = 0
-    var timer: Timer!
-    var timeInterval = 0.1
-    var audioSession = AVAudioSession.sharedInstance()
-    var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
-    var nowPlayingInfo = [String: Any]()
+    private var timer: Timer!
+    private var timeInterval = 0.1
+    private var audioSession = AVAudioSession.sharedInstance()
+    private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+    private var nowPlayingInfo = [String: Any]()
 
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var playButton: UIButton!
@@ -125,7 +125,7 @@ class ViewController: UIViewController {
         }
     }
 
-    func setupRemoteControll() {
+    private func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
             self.player.play()
@@ -145,19 +145,19 @@ class ViewController: UIViewController {
         }
     }
 
-    func playButtonPlaying() {
+    private func playButtonPlaying() {
         playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
     }
 
-    func playButtonPaused() {
+    private func playButtonPaused() {
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
     }
 
-    func setTimer() {
+    private func setTimer() {
         timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(updateSliderBar), userInfo: nil, repeats: true)
     }
 
-    func stopTimer() {
+    private func stopTimer() {
         timer?.invalidate()
         timer = nil
     }
@@ -175,7 +175,7 @@ class ViewController: UIViewController {
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
-    func seekFinished(isFinished: Bool) {
+    private func seekFinished(isFinished: Bool) {
         if isFinished {
             setTimer()
         }
@@ -200,7 +200,7 @@ class ViewController: UIViewController {
         nextMusic()
     }
 
-    func perviousMusic() {
+    private func perviousMusic() {
         if songIndex == 0 {
             songIndex = songData.songSources.count - 1
         } else {
@@ -209,7 +209,7 @@ class ViewController: UIViewController {
         prepareMusic()
     }
 
-    func nextMusic() {
+    private func nextMusic() {
         if songIndex == songData.songSources.count - 1 {
             songIndex = 0
         } else {
@@ -218,7 +218,7 @@ class ViewController: UIViewController {
         prepareMusic()
     }
 
-    func prepareMusic() {
+    private func prepareMusic() {
         stopTimer()
 
         let currentSong = songData.songSources[songIndex]
