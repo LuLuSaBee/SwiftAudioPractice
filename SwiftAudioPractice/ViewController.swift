@@ -61,8 +61,8 @@ class ViewController: UIViewController {
             return
         }
     }
-    
-    @objc func playerDidFinishPlaying(){
+
+    @objc func playerDidFinishPlaying() {
         nextMusic()
     }
 
@@ -170,7 +170,7 @@ class ViewController: UIViewController {
         stopTimer()
         sliderBar.setValue(slider.value, animated: false)
         playerItem.seek(to: CMTime(seconds: Double(slider.value), preferredTimescale: 1000), completionHandler: seekFinished)
-        
+
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
