@@ -1,0 +1,6 @@
+framework module Pods_SwiftAudioPractice_SwiftAudioPracticeUITests {
+  umbrella header "Pods-SwiftAudioPractice-SwiftAudioPracticeUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

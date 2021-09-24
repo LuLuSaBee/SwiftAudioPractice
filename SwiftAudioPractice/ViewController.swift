@@ -8,6 +8,10 @@
 import UIKit
 import AVFoundation
 import MediaPlayer
+import RxSwift
+import RxCocoa
+import RxRelay
+import RxAVFoundation
 
 class ViewController: UIViewController {
     var songData: SongData!
@@ -21,6 +25,7 @@ class ViewController: UIViewController {
     private var audioSession = AVAudioSession.sharedInstance()
     private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     private var nowPlayingInfo = [String: Any]()
+    private let disposeBag = DisposeBag()
 
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var playButton: UIButton!
@@ -75,34 +80,7 @@ class ViewController: UIViewController {
             return
         }
 
-        if keyPath == #keyPath(AVPlayerItem.status) {
-            let status: AVPlayerItem.Status
-            if let statusNumber = change?[.newKey] as? NSNumber {
-                status = AVPlayerItem.Status(rawValue: statusNumber.intValue)!
-            } else {
-                status = .unknown
-            }
-
-            switch status {
-            case .readyToPlay:
-                player.play()
-                sliderBar.maximumValue = Float(playerItem.duration.seconds)
-
-                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
-                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-                nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
-
-                setTimer()
-
-                do {
-                    try audioSession.setActive(true)
-                } catch {
-                    print("error")
-                }
-            default:
-                return
-            }
-        } else if keyPath == #keyPath(AVPlayer.timeControlStatus) {
+        if keyPath == #keyPath(AVPlayer.timeControlStatus) {
             let status: AVPlayer.TimeControlStatus
             guard let statusNumber = change?[.newKey] as? NSNumber else {
                 return
@@ -124,7 +102,7 @@ class ViewController: UIViewController {
             nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
         }
     }
- 
+
     private func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
@@ -224,7 +202,7 @@ class ViewController: UIViewController {
         let currentSong = songData.songSources[songIndex]
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
-        playerItem.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new], context: &playerItemContext)
+        subscribePlayItemStatus()
         player.addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: [.new], context: &playerItemContext)
         player.replaceCurrentItem(with: playerItem)
 
@@ -234,6 +212,35 @@ class ViewController: UIViewController {
         nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "InternetAlbum"
         nowPlayingInfo[MPMediaItemPropertyArtist] = "Internet"
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+    }
+    
+    // - MARK: Rx
+    func subscribePlayItemStatus() {
+        playerItem.rx.status.subscribe(onNext: { status in
+            switch status {
+            case .readyToPlay:
+                self.setupPlaying()
+            default:
+                return
+            }
+        }).disposed(by: disposeBag)
+    }
+
+    func setupPlaying() {
+        player.play()
+        sliderBar.maximumValue = Float(playerItem.duration.seconds)
+        
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+
+        setTimer()
+
+        do {
+            try audioSession.setActive(true)
+        } catch {
+            print("error")
+        }
     }
 }
 
