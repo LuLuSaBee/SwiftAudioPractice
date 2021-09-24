@@ -124,7 +124,7 @@ class ViewController: UIViewController {
             nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
         }
     }
-
+ 
     private func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
