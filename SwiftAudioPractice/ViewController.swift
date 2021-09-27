@@ -20,7 +20,6 @@ class ViewController: UIViewController {
     private var playerItem: AVPlayerItem!
     private var songIndex = 0
     private var playerItemContext = 0
-    private var timer: Timer!
     private var timeInterval = 0.1
     private var audioSession = AVAudioSession.sharedInstance()
     private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
@@ -39,8 +38,9 @@ class ViewController: UIViewController {
         setupRemoteControll()
         setupNotifications()
 
-        subscribePlayerTimeControlStatus()
         subscribePlayerButtonsTap()
+        subscribePlayerTimeControlStatus()
+        subscribePlayerTimeToUpdateSliderBar()
     }
 
     private func setupRemoteControll() {
@@ -63,21 +63,7 @@ class ViewController: UIViewController {
         }
     }
 
-    private func setTimer() {
-        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(updateSliderBar), userInfo: nil, repeats: true)
-    }
-
-    private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-    }
-
-    @objc func updateSliderBar() {
-        sliderBar.setValue(Float(playerItem.currentTime().seconds), animated: false)
-    }
-
     @IBAction func slide(_ slider: UISlider) {
-        stopTimer()
         playerItem.seek(to: CMTime(seconds: Double(slider.value), preferredTimescale: 1000), completionHandler: seekFinished)
 
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
@@ -86,7 +72,7 @@ class ViewController: UIViewController {
 
     private func seekFinished(isFinished: Bool) {
         if isFinished {
-            setTimer()
+            print("seek")
         }
     }
 
@@ -101,8 +87,6 @@ class ViewController: UIViewController {
     }
 
     private func prepareMusic() {
-        stopTimer()
-
         let currentSong = songData.songSources[songIndex]
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
@@ -144,8 +128,6 @@ class ViewController: UIViewController {
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
         setNowPlayingInfo()
 
-        setTimer()
-
         do {
             try audioSession.setActive(true)
         } catch {
@@ -154,12 +136,12 @@ class ViewController: UIViewController {
     }
 
     func subscribePlayerTimeControlStatus() {
-        player.rx.timeControlStatus.subscribe(onNext: {[setupWhenPlayerTimeControlStatusChange] status in
+        player.rx.timeControlStatus.subscribe(onNext: { [setupWhenPlayerTimeControlStatusChange] status in
             setupWhenPlayerTimeControlStatusChange(status)
         }).disposed(by: disposeBag)
     }
-    
-    func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus){
+
+    func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus) {
         switch status {
         case .playing:
             playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
@@ -190,7 +172,7 @@ class ViewController: UIViewController {
         previousButton.rx.tap.subscribe(onNext: { [perviousMusic] _ in perviousMusic() }).disposed(by: disposeBag)
         nextButton.rx.tap.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: disposeBag)
     }
-    
+
     func setupNotifications() {
         NotificationCenter.default.rx
             .notification(AVAudioSession.interruptionNotification)
@@ -221,6 +203,12 @@ class ViewController: UIViewController {
         default:
             return
         }
+    }
+    
+    func subscribePlayerTimeToUpdateSliderBar() {
+        player.rx.periodicTimeObserver(interval: CMTime(seconds: 0.01, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+            .bind(to: sliderBar.rx.value)
+            .disposed(by: disposeBag)
     }
 }
 
