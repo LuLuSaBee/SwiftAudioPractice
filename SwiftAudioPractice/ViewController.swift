@@ -110,7 +110,6 @@ class ViewController: UIViewController {
 
     @IBAction func slide(_ slider: UISlider) {
         stopTimer()
-        sliderBar.setValue(slider.value, animated: false)
         playerItem.seek(to: CMTime(seconds: Double(slider.value), preferredTimescale: 1000), completionHandler: seekFinished)
 
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
