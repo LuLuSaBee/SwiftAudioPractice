@@ -46,7 +46,6 @@ class ViewController: UIViewController {
     func setupNotifications() {
         let notification = NotificationCenter.default
         notification.addObserver(self, selector: #selector(handleInterruption(_:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
-        notification.addObserver(self, selector: #selector(playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
 
     @objc func handleInterruption(_ notification: Notification) {
@@ -70,10 +69,6 @@ class ViewController: UIViewController {
         default:
             return
         }
-    }
-
-    @objc func playerDidFinishPlaying() {
-        nextMusic()
     }
 
     private func setupRemoteControll() {
@@ -165,6 +160,8 @@ class ViewController: UIViewController {
                 return
             }
         }).disposed(by: disposeBag)
+
+        playerItem.rx.didPlayToEnd.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: disposeBag)
     }
 
     func setupPlaying() {
