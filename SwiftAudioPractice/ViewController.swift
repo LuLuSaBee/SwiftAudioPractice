@@ -186,21 +186,25 @@ class ViewController: UIViewController {
     }
 
     func subscribePlayerTimeControlStatus() {
-        player.rx.timeControlStatus.subscribe(onNext: { status in
-            switch status {
-            case .playing:
-                self.playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
-                self.nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
-            case .paused:
-                self.playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-                self.nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0
-            default:
-                return
-            }
-
-            self.nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.playerItem.currentTime().seconds
-            self.setNowPlayingInfo()
+        player.rx.timeControlStatus.subscribe(onNext: {[setupWhenPlayerTimeControlStatusChange] status in
+            setupWhenPlayerTimeControlStatusChange(status)
         }).disposed(by: disposeBag)
+    }
+    
+    func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus){
+        switch status {
+        case .playing:
+            playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
+        case .paused:
+            playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0
+        default:
+            return
+        }
+
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+        setNowPlayingInfo()
     }
 
     func subscribePlayerButtonsTap() {
