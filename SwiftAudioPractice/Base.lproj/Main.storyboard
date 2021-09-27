@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -52,9 +53,6 @@
                                                             <constraint firstAttribute="height" constant="60" id="jtd-zj-Qwf"/>
                                                         </constraints>
                                                         <state key="normal" image="backward.fill" catalog="system"/>
-                                                        <connections>
-                                                            <action selector="perviousButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HmG-lL-o1T"/>
-                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8if-W8-Lx1" userLabel="Play">
                                                         <rect key="frame" x="133" y="0.0" width="128" height="60"/>
@@ -62,9 +60,6 @@
                                                             <constraint firstAttribute="height" constant="60" id="4KY-zi-ECz"/>
                                                         </constraints>
                                                         <state key="normal" image="pause.fill" catalog="system"/>
-                                                        <connections>
-                                                            <action selector="playButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3OV-De-tVc"/>
-                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sm-j8-zV7" userLabel="Next">
                                                         <rect key="frame" x="266" y="0.0" width="128" height="60"/>
@@ -72,9 +67,6 @@
                                                             <constraint firstAttribute="height" constant="60" id="YYW-a9-gvl"/>
                                                         </constraints>
                                                         <state key="normal" image="forward.fill" catalog="system"/>
-                                                        <connections>
-                                                            <action selector="nextButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aWw-TS-jYm"/>
-                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -104,7 +96,9 @@
                     </view>
                     <connections>
                         <outlet property="nameLabel" destination="HZv-fp-ZWz" id="glG-9B-lS5"/>
+                        <outlet property="nextButton" destination="7sm-j8-zV7" id="WH8-qz-aS0"/>
                         <outlet property="playButton" destination="8if-W8-Lx1" id="JHa-5o-hRN"/>
+                        <outlet property="previousButton" destination="wdB-5A-Sjn" id="ugW-aK-imm"/>
                         <outlet property="sliderBar" destination="NkK-GO-gLc" id="edf-Bc-8YD"/>
                     </connections>
                 </viewController>

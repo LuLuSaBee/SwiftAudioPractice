@@ -28,7 +28,9 @@ class ViewController: UIViewController {
     private let disposeBag = DisposeBag()
 
     @IBOutlet var nameLabel: UILabel!
+    @IBOutlet var previousButton: UIButton!
     @IBOutlet var playButton: UIButton!
+    @IBOutlet var nextButton: UIButton!
     @IBOutlet var sliderBar: UISlider!
 
     override func viewDidLoad() {
@@ -36,8 +38,9 @@ class ViewController: UIViewController {
         prepareMusic()
         setupRemoteControll()
         setupNotifications()
-        
+
         subscribePlayerTimeControlStatus()
+        subscribePlayerButtonsTap()
     }
 
     func setupNotifications() {
@@ -121,40 +124,13 @@ class ViewController: UIViewController {
         }
     }
 
-    @IBAction func playButtonClick(_ sender: Any) {
-        switch player.timeControlStatus {
-        case .playing:
-            player.pause()
-        case .paused:
-            player.play()
-        default:
-            return
-        }
-    }
-
-    @IBAction func perviousButtonClick(_ sender: Any) {
-        perviousMusic()
-    }
-
-    @IBAction func nextButtonClick(_ sender: Any) {
-        nextMusic()
-    }
-
     private func perviousMusic() {
-        if songIndex == 0 {
-            songIndex = songData.songSources.count - 1
-        } else {
-            songIndex -= 1
-        }
+        songIndex = (songIndex - 1 + songData.songSources.count) % songData.songSources.count
         prepareMusic()
     }
 
     private func nextMusic() {
-        if songIndex == songData.songSources.count - 1 {
-            songIndex = 0
-        } else {
-            songIndex += 1
-        }
+        songIndex = (songIndex + 1) % songData.songSources.count
         prepareMusic()
     }
 
@@ -225,6 +201,22 @@ class ViewController: UIViewController {
             self.nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.playerItem.currentTime().seconds
             self.setNowPlayingInfo()
         }).disposed(by: disposeBag)
+    }
+
+    func subscribePlayerButtonsTap() {
+        playButton.rx.tap.subscribe(onNext: { [player] _ in
+            switch player.timeControlStatus {
+            case .playing:
+                player.pause()
+            case .paused:
+                player.play()
+            default:
+                return
+            }
+        }).disposed(by: disposeBag)
+
+        previousButton.rx.tap.subscribe(onNext: { [perviousMusic] _ in perviousMusic() }).disposed(by: disposeBag)
+        nextButton.rx.tap.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: disposeBag)
     }
 }
 
