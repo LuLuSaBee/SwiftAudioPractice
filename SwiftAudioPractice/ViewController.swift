@@ -44,11 +44,15 @@ class ViewController: UIViewController {
     }
 
     func setupNotifications() {
-        let notification = NotificationCenter.default
-        notification.addObserver(self, selector: #selector(handleInterruption(_:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.rx
+            .notification(AVAudioSession.interruptionNotification)
+            .subscribe(onNext: { [handleInterruption] notification in
+            handleInterruption(notification)
+        })
+            .disposed(by: disposeBag)
     }
 
-    @objc func handleInterruption(_ notification: Notification) {
+    func handleInterruption(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
             let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
