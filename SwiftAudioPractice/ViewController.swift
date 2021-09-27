@@ -43,38 +43,6 @@ class ViewController: UIViewController {
         subscribePlayerButtonsTap()
     }
 
-    func setupNotifications() {
-        NotificationCenter.default.rx
-            .notification(AVAudioSession.interruptionNotification)
-            .subscribe(onNext: { [handleInterruption] notification in
-            handleInterruption(notification)
-        })
-            .disposed(by: disposeBag)
-    }
-
-    func handleInterruption(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-            let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
-            return
-        }
-
-        switch type {
-        case .began:
-            player.pause()
-        case .ended:
-            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-            if options.contains(.shouldResume) {
-                player.play()
-            } else {
-                return
-            }
-        default:
-            return
-        }
-    }
-
     private func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
@@ -221,6 +189,38 @@ class ViewController: UIViewController {
 
         previousButton.rx.tap.subscribe(onNext: { [perviousMusic] _ in perviousMusic() }).disposed(by: disposeBag)
         nextButton.rx.tap.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: disposeBag)
+    }
+    
+    func setupNotifications() {
+        NotificationCenter.default.rx
+            .notification(AVAudioSession.interruptionNotification)
+            .subscribe(onNext: { [handleInterruption] notification in
+            handleInterruption(notification)
+        })
+            .disposed(by: disposeBag)
+    }
+
+    func handleInterruption(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+            return
+        }
+
+        switch type {
+        case .began:
+            player.pause()
+        case .ended:
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                player.play()
+            } else {
+                return
+            }
+        default:
+            return
+        }
     }
 }
 
