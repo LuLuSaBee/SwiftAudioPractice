@@ -200,20 +200,12 @@ class ViewController: UIViewController {
     }
 
     private func perviousMusic() {
-        if songIndex == 0 {
-            songIndex = songData.songSources.count - 1
-        } else {
-            songIndex -= 1
-        }
+        songIndex = (songIndex - 1 + songData.songSources.count) % songData.songSources.count
         prepareMusic()
     }
 
     private func nextMusic() {
-        if songIndex == songData.songSources.count - 1 {
-            songIndex = 0
-        } else {
-            songIndex += 1
-        }
+        songIndex = (songIndex + 1) % songData.songSources.count
         prepareMusic()
     }
 
