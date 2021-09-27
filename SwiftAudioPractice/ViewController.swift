@@ -36,6 +36,8 @@ class ViewController: UIViewController {
         prepareMusic()
         setupRemoteControll()
         setupNotifications()
+        
+        subscribePlayerTimeControlStatus()
     }
 
     func setupNotifications() {
@@ -71,38 +73,6 @@ class ViewController: UIViewController {
         nextMusic()
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard context == &playerItemContext else {
-            super.observeValue(forKeyPath: keyPath,
-                of: object,
-                change: change,
-                context: context)
-            return
-        }
-
-        if keyPath == #keyPath(AVPlayer.timeControlStatus) {
-            let status: AVPlayer.TimeControlStatus
-            guard let statusNumber = change?[.newKey] as? NSNumber else {
-                return
-            }
-            status = AVPlayer.TimeControlStatus(rawValue: statusNumber.intValue)!
-
-            switch status {
-            case .playing:
-                playButtonPlaying()
-                nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
-            case .paused:
-                playButtonPaused()
-                nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0
-            default:
-                return
-            }
-
-            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-            nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
-        }
-    }
-
     private func setupRemoteControll() {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         MPRemoteCommandCenter.shared().playCommand.addTarget { event in
@@ -121,14 +91,6 @@ class ViewController: UIViewController {
             self.perviousMusic()
             return .success
         }
-    }
-
-    private func playButtonPlaying() {
-        playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
-    }
-
-    private func playButtonPaused() {
-        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
     }
 
     private func setTimer() {
@@ -150,7 +112,7 @@ class ViewController: UIViewController {
         playerItem.seek(to: CMTime(seconds: Double(slider.value), preferredTimescale: 1000), completionHandler: seekFinished)
 
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+        setNowPlayingInfo()
     }
 
     private func seekFinished(isFinished: Bool) {
@@ -203,7 +165,6 @@ class ViewController: UIViewController {
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
         subscribePlayItemStatus()
-        player.addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: [.new], context: &playerItemContext)
         player.replaceCurrentItem(with: playerItem)
 
         nameLabel.text = url.lastPathComponent
@@ -211,9 +172,13 @@ class ViewController: UIViewController {
         nowPlayingInfo[MPMediaItemPropertyTitle] = url.lastPathComponent
         nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "InternetAlbum"
         nowPlayingInfo[MPMediaItemPropertyArtist] = "Internet"
+        setNowPlayingInfo()
+    }
+
+    func setNowPlayingInfo() {
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
-    
+
     // - MARK: Rx
     func subscribePlayItemStatus() {
         playerItem.rx.status.subscribe(onNext: { status in
@@ -228,11 +193,12 @@ class ViewController: UIViewController {
 
     func setupPlaying() {
         player.play()
+        sliderBar.setValue(0, animated: false)
         sliderBar.maximumValue = Float(playerItem.duration.seconds)
-        
+
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+        setNowPlayingInfo()
 
         setTimer()
 
@@ -241,6 +207,24 @@ class ViewController: UIViewController {
         } catch {
             print("error")
         }
+    }
+
+    func subscribePlayerTimeControlStatus() {
+        player.rx.timeControlStatus.subscribe(onNext: { status in
+            switch status {
+            case .playing:
+                self.playButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+                self.nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
+            case .paused:
+                self.playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+                self.nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0
+            default:
+                return
+            }
+
+            self.nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.playerItem.currentTime().seconds
+            self.setNowPlayingInfo()
+        }).disposed(by: disposeBag)
     }
 }
 
