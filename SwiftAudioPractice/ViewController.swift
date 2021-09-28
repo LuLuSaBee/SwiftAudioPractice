@@ -38,9 +38,9 @@ class ViewController: UIViewController {
         setupRemoteControll()
         setupNotifications()
 
-        subscribePlayerButtonsTap()
-        subscribePlayerTimeControlStatus()
-        subscribePlayerTimeToUpdateSliderBar()
+        subscribePlayerButtons()
+        subscribePlayer()
+        subscribeSliderBar()
 
         sliderBar.isContinuous = false
     }
@@ -96,7 +96,7 @@ class ViewController: UIViewController {
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
-    // - MARK: Rx
+    // MARK: - Rx
     func subscribePlayItemStatus() {
         playerItem.rx.status.subscribe(onNext: { [setupPlaying] status in
             switch status {
@@ -124,10 +124,15 @@ class ViewController: UIViewController {
         }
     }
 
-    func subscribePlayerTimeControlStatus() {
+    func subscribePlayer() {
         player.rx.timeControlStatus.subscribe(onNext: { [setupWhenPlayerTimeControlStatusChange] status in
             setupWhenPlayerTimeControlStatusChange(status)
         }).disposed(by: disposeBag)
+        
+        player.rx.periodicTimeObserver(interval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+            .map { Float(CMTimeGetSeconds($0)) }
+            .bind(to: sliderBar.rx.value)
+            .disposed(by: disposeBag)
     }
 
     func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus) {
@@ -145,7 +150,7 @@ class ViewController: UIViewController {
         setNowPlayingInfo()
     }
 
-    func subscribePlayerButtonsTap() {
+    func subscribePlayerButtons() {
         playButton.rx.tap.subscribe(onNext: { [player] _ in
             switch player.timeControlStatus {
             case .playing:
@@ -193,12 +198,7 @@ class ViewController: UIViewController {
         }
     }
 
-    func subscribePlayerTimeToUpdateSliderBar() {
-        player.rx.periodicTimeObserver(interval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
-            .map { Float(CMTimeGetSeconds($0)) }
-            .bind(to: sliderBar.rx.value)
-            .disposed(by: disposeBag)
-
+    func subscribeSliderBar() {
         sliderBar.rx.value
             .subscribe(onNext: { [player, setNowPlayingInfo] value in
             player.seek(to: CMTime(seconds: Double(value), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), completionHandler: { _ in setNowPlayingInfo() })
