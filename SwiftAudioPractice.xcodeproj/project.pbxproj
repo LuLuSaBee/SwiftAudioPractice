@@ -18,7 +18,6 @@
 		8B17E0BC26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0BB26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift */; };
 		8B17E0CC26E9B73B007E9E61 /* SongData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B17E0CB26E9B73B007E9E61 /* SongData.swift */; };
 		8B69689E14E811DEE3B9F260 /* Pods_SwiftAudioPractice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 406DF0584B401F0D07A7B08E /* Pods_SwiftAudioPractice.framework */; };
-		8BCACD8B2701D82300E0A69A /* UISlider+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCACD8A2701D82300E0A69A /* UISlider+Rx.swift */; };
 		C0D35E62B185F7F8D16107DE /* Pods_SwiftAudioPractice_SwiftAudioPracticeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A6A768ECC8E2529C29BBB4 /* Pods_SwiftAudioPractice_SwiftAudioPracticeUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +59,6 @@
 		8B17E0BB26E8B30A007E9E61 /* SwiftAudioPracticeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAudioPracticeUITests.swift; sourceTree = "<group>"; };
 		8B17E0BD26E8B30A007E9E61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B17E0CB26E9B73B007E9E61 /* SongData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongData.swift; sourceTree = "<group>"; };
-		8BCACD8A2701D82300E0A69A /* UISlider+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISlider+Rx.swift"; sourceTree = "<group>"; };
 		A8CCD14CEB6CB9C551F50E79 /* Pods-SwiftAudioPracticeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAudioPracticeTests.debug.xcconfig"; path = "Target Support Files/Pods-SwiftAudioPracticeTests/Pods-SwiftAudioPracticeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B7D03E252FF8E2349037EE16 /* Pods-SwiftAudioPractice.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAudioPractice.debug.xcconfig"; path = "Target Support Files/Pods-SwiftAudioPractice/Pods-SwiftAudioPractice.debug.xcconfig"; sourceTree = "<group>"; };
 		D1A6A768ECC8E2529C29BBB4 /* Pods_SwiftAudioPractice_SwiftAudioPracticeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftAudioPractice_SwiftAudioPracticeUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,7 +126,6 @@
 				8B17E0A426E8B30A007E9E61 /* LaunchScreen.storyboard */,
 				8B17E0A726E8B30A007E9E61 /* Info.plist */,
 				8B17E0CB26E9B73B007E9E61 /* SongData.swift */,
-				8BCACD8A2701D82300E0A69A /* UISlider+Rx.swift */,
 			);
 			path = SwiftAudioPractice;
 			sourceTree = "<group>";
@@ -412,7 +409,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BCACD8B2701D82300E0A69A /* UISlider+Rx.swift in Sources */,
 				8B17E09E26E8B308007E9E61 /* ViewController.swift in Sources */,
 				8B17E09A26E8B308007E9E61 /* AppDelegate.swift in Sources */,
 				8B17E0CC26E9B73B007E9E61 /* SongData.swift in Sources */,

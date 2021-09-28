@@ -41,6 +41,8 @@ class ViewController: UIViewController {
         subscribePlayerButtonsTap()
         subscribePlayerTimeControlStatus()
         subscribePlayerTimeToUpdateSliderBar()
+
+        sliderBar.isContinuous = false
     }
 
     private func setupRemoteControll() {
@@ -60,19 +62,6 @@ class ViewController: UIViewController {
         MPRemoteCommandCenter.shared().previousTrackCommand.addTarget { event in
             self.perviousMusic()
             return .success
-        }
-    }
-
-    @IBAction func slide(_ slider: UISlider) {
-        playerItem.seek(to: CMTime(seconds: Double(slider.value), preferredTimescale: 1000), completionHandler: seekFinished)
-
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-        setNowPlayingInfo()
-    }
-
-    private func seekFinished(isFinished: Bool) {
-        if isFinished {
-            print("seek")
         }
     }
 
@@ -102,15 +91,17 @@ class ViewController: UIViewController {
     }
 
     func setNowPlayingInfo() {
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
     // - MARK: Rx
     func subscribePlayItemStatus() {
-        playerItem.rx.status.subscribe(onNext: { status in
+        playerItem.rx.status.subscribe(onNext: { [setupPlaying] status in
             switch status {
             case .readyToPlay:
-                self.setupPlaying()
+                setupPlaying()
             default:
                 return
             }
@@ -124,8 +115,6 @@ class ViewController: UIViewController {
         sliderBar.setValue(0, animated: false)
         sliderBar.maximumValue = Float(playerItem.duration.seconds)
 
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.duration.seconds
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
         setNowPlayingInfo()
 
         do {
@@ -153,7 +142,6 @@ class ViewController: UIViewController {
             return
         }
 
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
         setNowPlayingInfo()
     }
 
@@ -204,11 +192,17 @@ class ViewController: UIViewController {
             return
         }
     }
-    
+
     func subscribePlayerTimeToUpdateSliderBar() {
-        player.rx.periodicTimeObserver(interval: CMTime(seconds: 0.01, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+        player.rx.periodicTimeObserver(interval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+            .map { Float(CMTimeGetSeconds($0)) }
             .bind(to: sliderBar.rx.value)
             .disposed(by: disposeBag)
+
+        sliderBar.rx.value
+            .subscribe(onNext: { [player, setNowPlayingInfo] value in
+            player.seek(to: CMTime(seconds: Double(value), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), completionHandler: { _ in setNowPlayingInfo() })
+        }).disposed(by: disposeBag)
     }
 }
 
