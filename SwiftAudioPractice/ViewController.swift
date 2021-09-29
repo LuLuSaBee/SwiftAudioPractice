@@ -19,7 +19,6 @@ class ViewController: UIViewController {
     private let player = AVPlayer()
     private var playerItem: AVPlayerItem!
     private var songIndex = 0
-    private var playerItemContext = 0
     private var timeInterval = 0.1
     private var audioSession = AVAudioSession.sharedInstance()
     private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
