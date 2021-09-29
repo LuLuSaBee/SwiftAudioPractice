@@ -77,7 +77,7 @@ class ViewController: UIViewController {
         let currentSong = songData.songSources[songIndex]
         guard let url = URL(string: currentSong) else { return }
         playerItem = AVPlayerItem(url: url)
-        subscribePlayItemStatus()
+        subscribePlayItem()
         player.replaceCurrentItem(with: playerItem)
 
         nameLabel.text = url.lastPathComponent
@@ -95,7 +95,7 @@ class ViewController: UIViewController {
     }
 
     // MARK: - Rx
-    func subscribePlayItemStatus() {
+    func subscribePlayItem() {
         playerItem.rx.status.subscribe(onNext: { [setupPlaying] status in
             switch status {
             case .readyToPlay:
