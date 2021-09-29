@@ -24,6 +24,7 @@ class ViewController: UIViewController {
     private var audioSession = AVAudioSession.sharedInstance()
     private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     private var nowPlayingInfo = [String: Any]()
+    private var sliderMovedValue: Float? = nil
     private let disposeBag = DisposeBag()
 
     @IBOutlet var nameLabel: UILabel!
@@ -41,8 +42,6 @@ class ViewController: UIViewController {
         subscribePlayerButtons()
         subscribePlayer()
         subscribeSliderBar()
-
-        sliderBar.isContinuous = false
     }
 
     private func setupRemoteControll() {
@@ -128,11 +127,23 @@ class ViewController: UIViewController {
         player.rx.timeControlStatus.subscribe(onNext: { [setupWhenPlayerTimeControlStatusChange] status in
             setupWhenPlayerTimeControlStatusChange(status)
         }).disposed(by: disposeBag)
-        
+
         player.rx.periodicTimeObserver(interval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
-            .map { Float(CMTimeGetSeconds($0)) }
+            .map { [compareSlideAndPlayerSeconds] value in return compareSlideAndPlayerSeconds(value) }
             .bind(to: sliderBar.rx.value)
             .disposed(by: disposeBag)
+    }
+
+    func compareSlideAndPlayerSeconds(value: CMTime) -> Float {
+        let seconds = Float(CMTimeGetSeconds(value))
+
+        if sliderMovedValue == nil {
+            return seconds
+        } else if sliderMovedValue == seconds {
+            setSliderMovedValue(value: nil)
+            return seconds
+        }
+        return sliderMovedValue!
     }
 
     func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus) {
@@ -199,10 +210,17 @@ class ViewController: UIViewController {
     }
 
     func subscribeSliderBar() {
-        sliderBar.rx.value
-            .subscribe(onNext: { [player, setNowPlayingInfo] value in
-            player.seek(to: CMTime(seconds: Double(value), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), completionHandler: { _ in setNowPlayingInfo() })
+        sliderBar.rx.controlEvent(.valueChanged).subscribe(onNext: { [sliderBar, setSliderMovedValue] _ in
+            setSliderMovedValue(sliderBar?.value)
         }).disposed(by: disposeBag)
+
+        sliderBar.rx.controlEvent([.touchUpInside, .touchUpOutside]).subscribe(onNext: { [sliderBar, player, setNowPlayingInfo] _ in
+            player.seek(to: CMTime(seconds: Double(sliderBar!.value), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), completionHandler: { _ in setNowPlayingInfo() })
+        }).disposed(by: disposeBag)
+    }
+
+    func setSliderMovedValue(value: Float?) {
+        sliderMovedValue = value
     }
 }
 
