@@ -156,14 +156,14 @@ class ViewController: UIViewController {
             .subscribe(onNext: { status in setupWhenPlayerTimeControlStatusChange(status) })
             .disposed(by: disposeBag)
         
-        let compareSlideAndPlayerSeconds: (CMTime) -> Float =  { [sliderMovedValue, setSliderMovedValue] value in
+        let compareSlideAndPlayerSeconds: (CMTime) -> Float =  { [weak self, setSliderMovedValue] value in
             let seconds = Float(CMTimeGetSeconds(value))
             
-            if sliderMovedValue == seconds {
+            if self?.sliderMovedValue == seconds {
                 setSliderMovedValue(nil)
                 return seconds
             }
-            return sliderMovedValue ?? seconds
+            return self?.sliderMovedValue ?? seconds
         }
         
         player.rx.periodicTimeObserver(interval: CMTime(seconds: timeInterval, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
