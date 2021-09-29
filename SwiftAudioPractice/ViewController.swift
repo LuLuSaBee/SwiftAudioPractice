@@ -24,6 +24,7 @@ class ViewController: UIViewController {
     private var nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     private var nowPlayingInfo = [String: Any]()
     private var sliderMovedValue: Float? = nil
+    private var playerItemBag = DisposeBag()
     private let disposeBag = DisposeBag()
     
     @IBOutlet var nameLabel: UILabel!
@@ -105,6 +106,8 @@ class ViewController: UIViewController {
     
     // MARK: - Rx
     private func subscribePlayItem() {
+        playerItemBag = DisposeBag()
+        
         let setupPlaying: () -> Void = { [player, sliderBar] in
             player.play()
             sliderBar?.setValue(0, animated: false)
@@ -119,18 +122,19 @@ class ViewController: UIViewController {
                     return
                 }
             })
-            .disposed(by: disposeBag)
+            .disposed(by: playerItemBag)
         
-        playerItem.rx.didPlayToEnd.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: disposeBag)
+        playerItem.rx.didPlayToEnd.subscribe(onNext: { [nextMusic] _ in nextMusic() }).disposed(by: playerItemBag)
         
         playerItem.rx.duration
             .map { $0.seconds }
+            .filter { $0 > 0 }
             .subscribe(onNext: { [weak self, setNowPlayingInfoAndCurrentTime] seconds in
                 self?.sliderBar.maximumValue = Float(seconds)
                 
                 self?.nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = seconds
                 setNowPlayingInfoAndCurrentTime()
-            }).disposed(by: disposeBag)
+            }).disposed(by: playerItemBag)
     }
     
     private func subscribePlayer() {
