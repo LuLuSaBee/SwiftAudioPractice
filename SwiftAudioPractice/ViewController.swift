@@ -136,13 +136,11 @@ class ViewController: UIViewController {
     func compareSlideAndPlayerSeconds(value: CMTime) -> Float {
         let seconds = Float(CMTimeGetSeconds(value))
 
-        if sliderMovedValue == nil {
-            return seconds
-        } else if sliderMovedValue == seconds {
+        if sliderMovedValue == seconds {
             setSliderMovedValue(value: nil)
             return seconds
         }
-        return sliderMovedValue!
+        return sliderMovedValue ?? seconds
     }
 
     func setupWhenPlayerTimeControlStatusChange(status: AVPlayer.TimeControlStatus) {
