@@ -128,7 +128,7 @@ class ViewController: UIViewController {
             setupWhenPlayerTimeControlStatusChange(status)
         }).disposed(by: disposeBag)
 
-        player.rx.periodicTimeObserver(interval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+        player.rx.periodicTimeObserver(interval: CMTime(seconds: timeInterval, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
             .map { [compareSlideAndPlayerSeconds] value in return compareSlideAndPlayerSeconds(value) }
             .bind(to: sliderBar.rx.value)
             .disposed(by: disposeBag)
