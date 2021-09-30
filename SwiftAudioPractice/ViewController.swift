@@ -134,7 +134,8 @@ class ViewController: UIViewController {
                 
                 self?.nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = seconds
                 setNowPlayingInfoAndCurrentTime()
-            }).disposed(by: playerItemBag)
+            })
+            .disposed(by: playerItemBag)
     }
     
     private func subscribePlayer() {
