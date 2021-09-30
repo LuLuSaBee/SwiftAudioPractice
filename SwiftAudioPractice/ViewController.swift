@@ -108,19 +108,11 @@ class ViewController: UIViewController {
     private func subscribePlayItem() {
         playerItemBag = DisposeBag()
         
-        let setupPlaying: () -> Void = { [player, sliderBar] in
-            player.play()
-            sliderBar?.setValue(0, animated: false)
-        }
-        
         playerItem.rx.status
-            .subscribe(onNext: { [setupPlaying] status in
-                switch status {
-                case .readyToPlay:
-                    setupPlaying()
-                default:
-                    return
-                }
+            .filter { $0 == .readyToPlay }
+            .subscribe(onNext: { [player, sliderBar] _ in
+                player.play()
+                sliderBar?.setValue(0, animated: false)
             })
             .disposed(by: playerItemBag)
         
